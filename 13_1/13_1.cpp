@@ -57,6 +57,7 @@ int main()
 {
 	cv::Mat temp = cv::imread("D:\\template.png", 0);
 	cv::Mat img = cv::imread("D:\\img.png", 0);
+	  
 	int nAngle = 8;
 	int blockSize = 16;
 	int nX = temp.cols / blockSize;
@@ -65,6 +66,7 @@ int main()
 	int aa = 0;
 	int bb = 0;
 	float s = 100000;
+
 	float * temp_hist = new float[bins];
 	memset(temp_hist, 0, sizeof(float) * bins);
 	int reCode = 0;
@@ -76,14 +78,16 @@ int main()
   
 	for (int a = 0; a < img.rows - temp.rows; ) {
 		for (int b = 0; b < img.cols - temp.cols; ) {
-			Rect m( b, a, temp.cols,temp.rows);
+			Rect m( b, a, temp.cols, temp.rows);
 			Mat img1 = img(m);
+
 			float * img_hist = new float[bins];
 			memset(img_hist, 0, sizeof(float) * bins);
 			reCode = calcHOG(img1, img_hist, nAngle, blockSize);
 			if (reCode != 0) {
 				return -1;
 			}
+
 			float dis1 = normL2(temp_hist, img_hist, bins);
 			if (dis1 < s) {
 				s = dis1;
@@ -95,11 +99,12 @@ int main()
 		}
 		a = a + 3;
 	}
+
 	cv::Rect rect;
 	rect.x = aa;
 	rect.y = bb;
-	rect.width = 108;
-	rect.height = 48;
+	rect.width = temp.cols;
+	rect.height = temp.rows;
 	rectangle(img, rect, CV_RGB(255, 0, 0), 1, 8, 0);
 
 	cv::imshow("img", img);
